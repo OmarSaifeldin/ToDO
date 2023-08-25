@@ -10,6 +10,8 @@ import SwiftUI
 struct ContentView: View {
     
     @State private var todos = [Todo(title: "Feed the cat", isCompleted: true), Todo(title: "Play with cat"), Todo(title: "Get allergies"),Todo(title: "Run away from cat"),Todo(title: "Get a new cat")]
+    @State private var showAddSheet = false
+    
     var body: some View {
         NavigationStack{
             List{
@@ -31,25 +33,29 @@ struct ContentView: View {
                         }
                     }
                 }
-                .onDelete { indexSet in
-                    todos.remove(atOffsets: indexSet)
+            }
+            .navigationTitle("Todos")
+            .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    EditButton()
                 }
-                .onMove { originalOffsets, newOffset in
-                    todos.move(fromOffsets: originalOffsets, toOffset: newOffset)
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button {
+                        showAddSheet = true
+                    } label: {
+                        Image(systemName: "plus")
+                    }
                 }
             }
-        }
-        .navigationTitle("Todos")
-        .toolbar {
-            ToolbarItem(placement: .navigationBarLeading) {
-                EditButton()
+            .sheet(isPresented: $showAddSheet) {
+                NewTodoView(sourceArray: $todos)
             }
         }
     }
-            struct ContentView_Previews: PreviewProvider {
-                static var previews: some View {
-                    ContentView()
-                }
+}
+        struct ContentView_Previews: PreviewProvider {
+            static var previews: some View {
+                ContentView()
             }
         }
 
